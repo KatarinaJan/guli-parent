@@ -27,6 +27,9 @@ public class VideoVo implements Serializable {
     @ApiModelProperty(value = "是否可以试听：0默认 1免费")
     private Boolean free;
 
+    @ApiModelProperty(value = "云端视频资源")
+    private String videoSourceId;
+
     @ApiModelProperty(value = "云服务器上存储的视频文件名称")
     private String videoOriginalName;
 

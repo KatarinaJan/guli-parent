@@ -43,7 +43,7 @@
         LEFT JOIN edu_course_description cd ON c.id = cd.id
         LEFT JOIN edu_teacher t ON c.teacher_id = t.id
         LEFT JOIN edu_subject s1 ON c.subject_parent_id = s1.id
-        LEFT JOIN edu_subject s2 ON c.subject_id = s1.id
+        LEFT JOIN edu_subject s2 ON c.subject_id = s2.id
         WHERE
             c.id = #{courseId}
     </select>

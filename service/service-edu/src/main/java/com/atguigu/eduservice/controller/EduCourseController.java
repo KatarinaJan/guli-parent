@@ -126,7 +126,7 @@ public class EduCourseController {
         }
     }
 
-    @ApiOperation(value = "根据条件分页查询")
+    @ApiOperation(value = "用户界面-根据条件分页查询")
     @PostMapping("/front/{page}/{limit}")
     public R pageListWeb(
             @ApiParam(name = "page", value = "当前页码", required = true)

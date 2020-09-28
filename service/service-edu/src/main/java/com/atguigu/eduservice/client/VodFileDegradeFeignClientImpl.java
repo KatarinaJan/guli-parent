@@ -12,7 +12,7 @@ import java.util.List;
  * @Date: 2020-09-22 14:08
  */
 @Component
-public class VodFileDegradeFeignClient implements VodClient{
+public class VodFileDegradeFeignClientImpl implements VodClient{
     @Override
     public R removeVideo(String videoId) {
         return R.error().message("time out");

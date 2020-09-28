@@ -33,7 +33,7 @@ public class IndexController {
     @Autowired
     private EduTeacherService teacherService;
 
-    @ApiOperation(value = "查询前8条热门课程，前4条名师")
+    @ApiOperation(value = "用户界面-查询前8条热门课程，前4条名师")
     @GetMapping
     public R index() {
         LambdaQueryWrapper<EduCourse> courseWrapper = new LambdaQueryWrapper<>();

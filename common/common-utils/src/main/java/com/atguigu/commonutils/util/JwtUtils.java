@@ -68,7 +68,7 @@ public class JwtUtils {
     }
 
     /**
-     * 根据token获取会员信息id
+     * 从请求头中根据token获取会员信息id
      * @param request
      * @return
      */

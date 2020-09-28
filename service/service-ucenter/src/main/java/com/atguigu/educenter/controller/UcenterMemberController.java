@@ -4,6 +4,7 @@ package com.atguigu.educenter.controller;
 import com.atguigu.commonutils.R;
 import com.atguigu.commonutils.ResultCode;
 import com.atguigu.commonutils.util.JwtUtils;
+import com.atguigu.educenter.entity.UcenterMember;
 import com.atguigu.educenter.entity.vo.LoginInfoVo;
 import com.atguigu.educenter.entity.vo.LoginVo;
 import com.atguigu.educenter.entity.vo.RegisterVo;
@@ -11,6 +12,8 @@ import com.atguigu.educenter.service.UcenterMemberService;
 import com.atguigu.servicebase.exception.GuliException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +61,17 @@ public class UcenterMemberController {
             e.printStackTrace();
             throw new GuliException(ResultCode.ERROR, "获取失败！");
         }
+    }
+
+    /**
+     * 根据token字符串获取用户信息
+     * @param memberId 用户id
+     * @return 用户信息对象
+     */
+    @ApiOperation("根据id获取用户信息")
+    @GetMapping("getInfoUc/{memberId}")
+    public UcenterMember getInfo(@PathVariable String memberId) {
+        return memberService.getById(memberId);
     }
 
 }
