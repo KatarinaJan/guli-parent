@@ -5,8 +5,12 @@ import com.alibaba.excel.util.StringUtils;
 import com.atguigu.commonutils.R;
 import com.atguigu.eduservice.entity.EduCourse;
 import com.atguigu.eduservice.entity.query.CourseQuery;
+import com.atguigu.eduservice.entity.query.CourseQueryDto;
+import com.atguigu.eduservice.entity.vo.ChapterVo;
 import com.atguigu.eduservice.entity.vo.CourseInfoVo;
 import com.atguigu.eduservice.entity.vo.CoursePublishVo;
+import com.atguigu.eduservice.entity.vo.CourseWebVo;
+import com.atguigu.eduservice.service.EduChapterService;
 import com.atguigu.eduservice.service.EduCourseService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -16,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -33,6 +38,8 @@ public class EduCourseController {
 
     @Autowired
     private EduCourseService courseService;
+    @Autowired
+    private EduChapterService chapterService;
 
     @ApiOperation(value = "新增课程")
     @PostMapping("addCourseInfo")
@@ -118,5 +125,35 @@ public class EduCourseController {
             return R.error().message("删除失败！");
         }
     }
+
+    @ApiOperation(value = "根据条件分页查询")
+    @PostMapping("/front/{page}/{limit}")
+    public R pageListWeb(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
+            @PathVariable Long limit,
+            @ApiParam(name = "courseQuery", value = "查询对象", required = false)
+            @RequestBody(required = false) CourseQueryDto courseQuery) {
+        Page<EduCourse> coursePage = new Page<>(page, limit);
+        Map<String, Object> map = courseService.pageListWeb(coursePage, courseQuery);
+        if (null == map) {
+            return R.error().message("没有查到任何信息");
+        }
+        return R.ok().data(map).message("获取数据成功！");
+    }
+
+    @ApiOperation(value = "用户界面-根据id查询课程详情")
+    @GetMapping("/front/{courseId}")
+    public R selectWebInfoById(
+            @ApiParam(name = "courseId", value = "课程id", required = true)
+            @PathVariable String courseId) {
+        // 查询课程信息和讲师信息
+        CourseWebVo courseWebVo = courseService.selectWebInfoById(courseId);
+        // 查询当前课程章节信息
+        List<ChapterVo> chapterVoList = chapterService.nestedList(courseId);
+        return R.ok().data("courseWebVo", courseWebVo).data("chapterVoList", chapterVoList);
+    }
+
 }
 

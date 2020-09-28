@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * <p>
@@ -20,5 +21,7 @@ public interface EduTeacherService extends IService<EduTeacher> {
     void pageQuery(Page<EduTeacher> pageParam, TeacherQuery teacherQuery);
 
     boolean removeById(Serializable id);
+
+    Map<String, Object>  pageListWeb(Page<EduTeacher> page);
 
 }

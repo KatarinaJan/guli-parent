@@ -2,8 +2,11 @@ package com.atguigu.eduservice.controller;
 
 
 import com.atguigu.commonutils.R;
+import com.atguigu.eduservice.entity.EduCourse;
 import com.atguigu.eduservice.entity.EduTeacher;
+import com.atguigu.eduservice.entity.query.CourseQueryDto;
 import com.atguigu.eduservice.entity.query.TeacherQuery;
+import com.atguigu.eduservice.service.EduCourseService;
 import com.atguigu.eduservice.service.EduTeacherService;
 import com.atguigu.servicebase.exception.GuliException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,6 +35,9 @@ public class EduTeacherController {
 
     @Autowired
     private EduTeacherService teacherService;
+
+    @Autowired
+    private EduCourseService courseService;
 
     @ApiOperation(value = "所有讲师列表")
     @GetMapping
@@ -116,5 +123,33 @@ public class EduTeacherController {
         }
         return R.ok().data("items", list);
     }
+
+    @ApiOperation(value = "前端页面-分页讲师列表")
+    @GetMapping(value = "/{page}/{limit}")
+    public R pageListWeb(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
+            @PathVariable Long limit) {
+        Page<EduTeacher> teacherPage = new Page<>(page, limit);
+        Map<String, Object> map = teacherService.pageListWeb(teacherPage);
+        return R.ok().data(map);
+    }
+
+    @ApiOperation(value = "根据讲师Id查询课程")
+    @GetMapping("/front/{id}")
+    public R selectByTeacherId(
+            @ApiParam(name = "teacherId", value = "讲师id", required = true)
+            @PathVariable(value = "id") String teacherId) {
+        EduTeacher teacher = teacherService.getById(teacherId);
+        if (teacher == null) {
+            return R.error().message("没有查询到该讲师信息！");
+        }
+
+        List<EduCourse> courseList = courseService.selectByTeacherId(teacherId);
+
+        return R.ok().data("courseList", courseList).data("teacher", teacher).message("获取数据成功！");
+    }
+
 }
 

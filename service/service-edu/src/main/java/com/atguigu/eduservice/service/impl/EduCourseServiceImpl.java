@@ -6,10 +6,12 @@ import com.atguigu.eduservice.constant.Course;
 import com.atguigu.eduservice.entity.EduChapter;
 import com.atguigu.eduservice.entity.EduVideo;
 import com.atguigu.eduservice.entity.query.CourseQuery;
+import com.atguigu.eduservice.entity.query.CourseQueryDto;
 import com.atguigu.eduservice.entity.vo.CourseInfoVo;
 import com.atguigu.eduservice.entity.EduCourse;
 import com.atguigu.eduservice.entity.EduCourseDescription;
 import com.atguigu.eduservice.entity.vo.CoursePublishVo;
+import com.atguigu.eduservice.entity.vo.CourseWebVo;
 import com.atguigu.eduservice.mapper.EduCourseMapper;
 import com.atguigu.eduservice.service.EduChapterService;
 import com.atguigu.eduservice.service.EduCourseDescriptionService;
@@ -18,12 +20,19 @@ import com.atguigu.eduservice.service.EduVideoService;
 import com.atguigu.servicebase.exception.GuliException;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -186,5 +195,78 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
             }
         }
         return true;
+    }
+
+    @Override
+    public List<EduCourse> selectByTeacherId(String teacherId) {
+        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
+        wrapper.eq("teacher_id", teacherId);
+        wrapper.orderByDesc("gmt_modified");
+        return baseMapper.selectList(wrapper);
+    }
+
+    @Override
+    public Map<String, Object> pageListWeb(Page<EduCourse> pageParam, CourseQueryDto courseQuery) {
+        LambdaQueryWrapper<EduCourse> wrapper = new LambdaQueryWrapper<>();
+
+        if (null != courseQuery) {
+            String subjectParentId = courseQuery.getSubjectParentId();
+            String subjectId = courseQuery.getSubjectId();
+            String buyCountSort = courseQuery.getBuyCountSort();
+            String gmtModifiedSort = courseQuery.getGmtModifiedSort();
+            String priceSort = courseQuery.getPriceSort();
+
+            if (!StringUtils.isEmpty(subjectParentId)) {
+                wrapper.eq(EduCourse::getSubjectParentId, subjectParentId);
+            }
+            if (!StringUtils.isEmpty(subjectId)) {
+                wrapper.eq(EduCourse::getSubjectId, subjectId);
+            }
+            if (!StringUtils.isEmpty(buyCountSort)) {
+                wrapper.orderByDesc(EduCourse::getBuyCount);
+            }
+            if (!StringUtils.isEmpty(gmtModifiedSort)){
+                wrapper.orderByDesc(EduCourse::getGmtModified);
+            }
+            if (!StringUtils.isEmpty(priceSort)) {
+                wrapper.orderByDesc(EduCourse::getPrice);
+            }
+        }
+
+        baseMapper.selectPage(pageParam, wrapper);
+
+        List<EduCourse> records = pageParam.getRecords();
+        long pages = pageParam.getPages();
+        long current = pageParam.getCurrent();
+        long total = pageParam.getTotal();
+        long size = pageParam.getSize();
+        boolean hasNext = pageParam.hasNext();
+        boolean hasPrevious = pageParam.hasPrevious();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("items", records);
+        map.put("pages", pages);
+        map.put("current", current);
+        map.put("total", total);
+        map.put("size", size);
+        map.put("hasNext", hasNext);
+        map.put("hasPrevious", hasPrevious);
+
+        return map;
+    }
+
+    @Override
+    public CourseWebVo selectWebInfoById(String id) {
+        // 先更新浏览数
+        this.updatePageViewCount(id);
+        // 查询课程详情
+        return baseMapper.selectWebInfoById(id);
+    }
+
+    @Override
+    public void updatePageViewCount(String id) {
+        EduCourse course = baseMapper.selectById(id);
+        course.setViewCount(course.getViewCount() + 1);
+        baseMapper.updateById(course);
     }
 }

@@ -18,6 +18,9 @@
         <module>service_cms</module>
         <module>service-cms</module>
         <module>service-msm</module>
+        <module>service-msm</module>
+        <module>service-msm</module>
+        <module>service-ucenter</module>
     </modules>
 
 
