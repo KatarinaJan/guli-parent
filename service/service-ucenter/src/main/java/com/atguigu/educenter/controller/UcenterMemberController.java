@@ -9,10 +9,10 @@ import com.atguigu.educenter.entity.vo.LoginInfoVo;
 import com.atguigu.educenter.entity.vo.LoginVo;
 import com.atguigu.educenter.entity.vo.RegisterVo;
 import com.atguigu.educenter.service.UcenterMemberService;
+import com.atguigu.servicebase.dto.MemberDto;
 import com.atguigu.servicebase.exception.GuliException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -69,9 +69,23 @@ public class UcenterMemberController {
      * @return 用户信息对象
      */
     @ApiOperation("根据id获取用户信息")
-    @GetMapping("getInfoUc/{memberId}")
-    public UcenterMember getInfo(@PathVariable String memberId) {
-        return memberService.getById(memberId);
+    @GetMapping("/front/pay/{memberId}")
+    public MemberDto getMemberInfo(@PathVariable String memberId) {
+        MemberDto member = new MemberDto();
+
+        UcenterMember ucenterMember = memberService.getById(memberId);
+        if (null != ucenterMember) {
+            member.setMemberId(ucenterMember.getId());
+            BeanUtils.copyProperties(ucenterMember, member);
+        }
+        return member;
+    }
+
+    @ApiOperation("统计某天注册人数")
+    @GetMapping("/countRegisterByDay/{day}")
+    public R countRegisterByDay(@PathVariable String day) {
+        Integer count = memberService.countRegisterByDay(day);
+        return R.ok().data("countRegister", count);
     }
 
 }

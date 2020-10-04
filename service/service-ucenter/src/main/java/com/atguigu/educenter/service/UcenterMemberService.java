@@ -22,4 +22,11 @@ public interface UcenterMemberService extends IService<UcenterMember> {
 
     LoginInfoVo getLoginInfo(String memberId);
 
+    /**
+     * 统计某天注册人数
+     * @param day 某天
+     * @return 注册人数
+     */
+    Integer countRegisterByDay(String day);
+
 }

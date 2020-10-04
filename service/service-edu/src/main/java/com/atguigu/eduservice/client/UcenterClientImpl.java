@@ -1,5 +1,6 @@
 package com.atguigu.eduservice.client;
 
+import com.atguigu.eduservice.entity.vo.MemberDto;
 import com.atguigu.eduservice.entity.vo.UcenterMemberPay;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class UcenterClientImpl implements UcenterClient {
 
     @Override
-    public UcenterMemberPay getUcenterMember(String memberId) {
+    public MemberDto getMemberInfo(String memberId) {
         return null;
     }
 }

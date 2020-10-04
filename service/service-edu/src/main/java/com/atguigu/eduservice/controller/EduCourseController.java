@@ -3,22 +3,27 @@ package com.atguigu.eduservice.controller;
 
 import com.alibaba.excel.util.StringUtils;
 import com.atguigu.commonutils.R;
+import com.atguigu.commonutils.util.JwtUtils;
+import com.atguigu.eduservice.client.OrderClient;
 import com.atguigu.eduservice.entity.EduCourse;
+import com.atguigu.eduservice.entity.EduTeacher;
 import com.atguigu.eduservice.entity.query.CourseQuery;
 import com.atguigu.eduservice.entity.query.CourseQueryDto;
-import com.atguigu.eduservice.entity.vo.ChapterVo;
-import com.atguigu.eduservice.entity.vo.CourseInfoVo;
-import com.atguigu.eduservice.entity.vo.CoursePublishVo;
-import com.atguigu.eduservice.entity.vo.CourseWebVo;
+import com.atguigu.eduservice.entity.vo.*;
 import com.atguigu.eduservice.service.EduChapterService;
 import com.atguigu.eduservice.service.EduCourseService;
+import com.atguigu.eduservice.service.EduTeacherService;
+import com.atguigu.servicebase.dto.CourseInfoDto;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +45,10 @@ public class EduCourseController {
     private EduCourseService courseService;
     @Autowired
     private EduChapterService chapterService;
+    @Autowired
+    private EduTeacherService teacherService;
+    @Autowired
+    private OrderClient orderClient;
 
     @ApiOperation(value = "新增课程")
     @PostMapping("addCourseInfo")
@@ -147,13 +156,47 @@ public class EduCourseController {
     @GetMapping("/front/{courseId}")
     public R selectWebInfoById(
             @ApiParam(name = "courseId", value = "课程id", required = true)
-            @PathVariable String courseId) {
+            @PathVariable String courseId,
+            HttpServletRequest request) {
         // 查询课程信息和讲师信息
         CourseWebVo courseWebVo = courseService.selectWebInfoById(courseId);
         // 查询当前课程章节信息
         List<ChapterVo> chapterVoList = chapterService.nestedList(courseId);
-        return R.ok().data("courseWebVo", courseWebVo).data("chapterVoList", chapterVoList);
+        // 远程调用，判断课程是否被购买
+        boolean buyCourse = orderClient.isBuyCourse(JwtUtils.getMemberIdByJwtToken(request), courseId);
+        return R.ok().data("courseWebVo", courseWebVo).data("chapterVoList", chapterVoList).data("isbuy", buyCourse);
     }
 
+    @ApiOperation(value = "前台支付-远程调用需要的课程信息")
+    @GetMapping("/front/pay/{courseId}")
+    public CourseInfoDto getCourseInfoDto(@PathVariable String courseId) {
+        CourseInfoDto courseInfo = new CourseInfoDto();
+
+        EduCourse course = courseService.getById(courseId);
+        if (null != course) {
+            courseInfo.setCourseId(course.getId());
+            courseInfo.setCourseTitle(course.getTitle());
+            courseInfo.setCourseCover(course.getCover());
+            courseInfo.setTotalFee(course.getPrice());
+            EduTeacher teacher = teacherService.getById(course.getTeacherId());
+            if (null != teacher) {
+                courseInfo.setTeacherName(teacher.getName());
+            }
+        }
+        return courseInfo;
+    }
+
+//    @ApiOperation(value = "根据id查询课程详情信息")
+//    @GetMapping("/front/getCourseInfo/{id}")
+//    public R getCourseInfo(@PathVariable String id, HttpServletRequest request) {
+//        // 查询课程详情信息
+//        CourseWebVo courseWebVo = courseService.selectWebInfoById(id);
+//        // 查询课程里面大纲数据
+//        List<ChapterVo> chapterVos = chapterService.nestedList(id);
+//        // 远程调用，判断课程是否被购买
+//        boolean buyCourse = orderClient.isBuyCourse(JwtUtils.getMemberIdByJwtToken(request), id);
+//        // 返回
+//        return R.ok().data("courseWebVo", courseWebVo).data("chapterVos", chapterVos).data("isbuy", buyCourse);
+//    }
 }
 

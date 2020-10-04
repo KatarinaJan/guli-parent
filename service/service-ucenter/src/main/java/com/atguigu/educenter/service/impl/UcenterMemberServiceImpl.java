@@ -99,5 +99,8 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         return loginInfoVo;
     }
 
-
+    @Override
+    public Integer countRegisterByDay(String day) {
+        return baseMapper.countRegisterByDay(day);
+    }
 }

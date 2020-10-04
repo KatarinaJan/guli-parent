@@ -1,6 +1,6 @@
-package com.atguigu.eduservice.client;
+package com.atguigu.eduorder.client;
 
-import com.atguigu.eduservice.entity.vo.MemberDto;
+import com.atguigu.servicebase.dto.MemberDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,14 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @Project: guli-parent
  * @Describe: 描述
  * @Author: Jan
- * @Date: 2020-09-28 12:48
+ * @Date: 2020-09-29 10:46
  */
 @Component
-@FeignClient(name = "service-ucenter", fallback = UcenterClientImpl.class)
+@FeignClient("service-ucenter")
 public interface UcenterClient {
 
-    // 根据用户id获取用户信息
     @GetMapping("/educenter/ucenter/front/pay/{memberId}")
     MemberDto getMemberInfo(@PathVariable("memberId") String memberId);
-
 }

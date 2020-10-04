@@ -22,9 +22,9 @@ import java.util.List;
 public interface VodClient {
 
     @DeleteMapping("/eduvod/video/{videoId}")
-    public R removeVideo(@PathVariable("videoId") String videoId);
+    R removeVideo(@PathVariable("videoId") String videoId);
 
     @DeleteMapping("/eduvod/video/batch")
-    public R removeVideoList(@RequestParam("videoIdList") List<String> videoIdList);
+    R removeVideoList(@RequestParam("videoIdList") List<String> videoIdList);
 
 }

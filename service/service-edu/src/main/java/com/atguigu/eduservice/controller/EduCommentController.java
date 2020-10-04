@@ -6,6 +6,7 @@ import com.atguigu.commonutils.R;
 import com.atguigu.commonutils.util.JwtUtils;
 import com.atguigu.eduservice.client.UcenterClient;
 import com.atguigu.eduservice.entity.EduComment;
+import com.atguigu.eduservice.entity.vo.MemberDto;
 import com.atguigu.eduservice.entity.vo.UcenterMemberPay;
 import com.atguigu.eduservice.service.EduCommentService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -75,9 +76,9 @@ public class EduCommentController {
         }
         // 存储会员id、昵称、头像
         comment.setMemberId(memberId);
-        UcenterMemberPay ucenterInfo = ucenterClient.getUcenterMember(memberId);
-        comment.setNickname(ucenterInfo.getNickname());
-        comment.setAvatar(ucenterInfo.getAvatar());
+        MemberDto member = ucenterClient.getMemberInfo(memberId);
+        comment.setNickname(member.getNickname());
+        comment.setAvatar(member.getAvatar());
 
         commentService.save(comment);
         return R.ok().message("保存成功！");
