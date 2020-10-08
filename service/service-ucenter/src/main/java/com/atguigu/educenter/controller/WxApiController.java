@@ -23,7 +23,7 @@ import java.util.Map;
  * @Date: 2020-09-25 16:26
  */
 @Api(description = "微信登录API接口")
-@CrossOrigin
+//@CrossOrigin
 // 由于不需要返回请求体 只需Controller即可
 //@RestController
 @Controller

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(description = "banner后台分页查询、添加、修改、删除接口")
 @RestController
-@CrossOrigin
+//@CrossOrigin
 @RequestMapping("/educms/admin/banner")
 public class CrmBannerController {
 

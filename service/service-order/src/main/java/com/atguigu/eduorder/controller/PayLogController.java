@@ -19,7 +19,7 @@ import java.util.Map;
  * @since 2020-09-29
  */
 @Api(description = "支付日志控制器")
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @RequestMapping("/eduorder/pay")
 public class PayLogController {

@@ -15,18 +15,21 @@
         <module>service-edu</module>
         <module>service-oss</module>
         <module>service-vod</module>
-        <module>service_cms</module>
         <module>service-cms</module>
-        <module>service-msm</module>
-        <module>service-msm</module>
         <module>service-msm</module>
         <module>service-ucenter</module>
         <module>service-order</module>
         <module>service-statistics</module>
+        <module>service-acl</module>
     </modules>
 
 
     <dependencies>
+        <!-- 测试nacos替代config -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
         <!--负载均衡-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

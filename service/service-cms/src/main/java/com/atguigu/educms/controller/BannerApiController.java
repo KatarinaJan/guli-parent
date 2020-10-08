@@ -22,7 +22,7 @@ import java.util.List;
 @Api(description = "网站首页Banner列表")
 @RestController
 @RequestMapping("/educms/banner")
-@CrossOrigin
+//@CrossOrigin
 public class BannerApiController {
 
     @Autowired

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Api(description = "阿里云短信服务")
 @RestController
 @RequestMapping("/edumsm/api")
-@CrossOrigin
+//@CrossOrigin
 public class MsmApiController {
 
     @Autowired

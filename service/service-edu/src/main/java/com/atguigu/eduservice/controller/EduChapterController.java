@@ -24,7 +24,7 @@ import java.util.List;
  * @since 2020-09-11
  */
 @Api(description = "课程章节管理")
-@CrossOrigin // 跨域
+//@CrossOrigin // 跨域
 @RestController
 @RequestMapping("/eduservice/chapter")
 public class EduChapterController {
